@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dia 10 💕 Arthur & Beatriz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --rose: #C2185B; --rose-light: #F8BBD9; --rose-pale: #FFF0F6;
+    --gold: #B8860B; --dark: #1a0a12; --text: #3d1a28; --muted: #8b5a6e; --white: #fffbfd;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Lato', sans-serif; background: var(--dark); color: var(--text); overflow-x: hidden; }
+
+  /* STARS */
+  #stars-bg { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:hidden; }
+  .star { position:absolute; background:white; border-radius:50%; animation: twinkle var(--d) ease-in-out infinite alternate; opacity:0; }
+  @keyframes twinkle { from{opacity:.1} to{opacity:.9} }
+
+  /* SECTIONS */
+  section { position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 24px; }
+
+  /* HERO */
+  #hero { background:transparent; text-align:center; }
+  .hero-tag { font-size:13px; letter-spacing:4px; text-transform:uppercase; color:var(--gold); margin-bottom:24px; opacity:0; animation:fadeUp 1s ease forwards .3s; }
+  .hero-title { font-family:'Playfair Display',serif; font-size:clamp(52px,12vw,96px); color:var(--white); line-height:1; opacity:0; animation:fadeUp 1s ease forwards .6s; }
+  .hero-title em { font-style:italic; color:#f9a8d4; }
+  .hero-subtitle { font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(18px,4vw,26px); color:#f9a8d4; margin-top:16px; opacity:0; animation:fadeUp 1s ease forwards .9s; }
+  .hero-date { margin-top:32px; font-size:14px; color:var(--gold); letter-spacing:2px; opacity:0; animation:fadeUp 1s ease forwards 1.2s; }
+  .scroll-hint { position:absolute; bottom:40px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,.4); font-size:12px; letter-spacing:2px; text-transform:uppercase; opacity:0; animation:fadeUp 1s ease forwards 2s, bounce 2s ease-in-out 2.5s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
+
+  /* CARD */
+  .card { background:rgba(255,255,255,.97); border-radius:20px; padding:40px 48px; max-width:680px; width:100%; box-shadow:0 24px 64px rgba(194,24,91,.15); }
+  .card-title { font-family:'Playfair Display',serif; font-size:28px; color:var(--rose); margin-bottom:8px; }
+  .card-sub { font-size:14px; color:var(--muted); margin-bottom:28px; }
+  .divider { width:48px; height:2px; background:var(--rose); border-radius:1px; margin:12px auto 20px; }
+
+  /* LETTER */
+  #letter-section { background:linear-gradient(180deg,var(--dark) 0%,#2d0a1e 100%); }
+  .letter-body { font-family:'Playfair Display',serif; font-size:17px; line-height:1.9; color:var(--text); }
+  .letter-body p { margin-bottom:16px; }
+  .letter-sig { font-family:'Playfair Display',serif; font-style:italic; font-size:22px; color:var(--rose); text-align:right; margin-top:24px; }
+
+  /* QUIZ */
+  #quiz-section { background:linear-gradient(180deg,#2d0a1e 0%,#1a0a12 100%); }
+  .quiz-progress { width:100%; height:4px; background:var(--rose-light); border-radius:2px; margin-bottom:28px; overflow:hidden; }
+  .quiz-progress-bar { height:100%; background:var(--rose); border-radius:2px; transition:width .5s ease; }
+  .quiz-q { font-family:'Playfair Display',serif; font-size:22px; color:var(--text); margin-bottom:24px; min-height:60px; line-height:1.4; }
+  .quiz-options { display:grid; gap:12px; }
+  .quiz-btn { background:var(--rose-pale); border:2px solid transparent; border-radius:12px; padding:14px 20px; text-align:left; font-family:'Lato',sans-serif; font-size:15px; color:var(--text); cursor:pointer; transition:all .2s ease; }
+  .quiz-btn:hover:not(:disabled) { border-color:var(--rose); background:#fce4ec; transform:translateX(4px); }
+  .quiz-btn.correct { background:#e8f5e9; border-color:#43a047; color:#1b5e20; }
+  .quiz-btn.wrong { background:#ffebee; border-color:#e53935; color:#b71c1c; }
+  .quiz-btn.hidden-reveal { background:linear-gradient(135deg,#fce4ec,#fff9c4); border-color:var(--gold); color:#5d4037; font-weight:700; animation:pulse-gold .8s ease infinite alternate; }
+  @keyframes pulse-gold { from{box-shadow:0 0 0 0 rgba(184,134,11,.3)} to{box-shadow:0 0 0 8px rgba(184,134,11,0)} }
+  .quiz-feedback { margin-top:16px; padding:14px 18px; border-radius:10px; font-size:14px; display:none; line-height:1.6; }
+  .quiz-score { font-family:'Playfair Display',serif; font-size:48px; color:var(--rose); text-align:center; margin:8px 0; }
+  .quiz-result-msg { text-align:center; font-size:16px; color:var(--muted); }
+
+  /* RIDDLE */
+  #riddle-section { background:linear-gradient(180deg,#1a0a12 0%,#2d0a1e 100%); }
+  .riddle-box { background:linear-gradient(135deg,#fff0f6,#fff8dc); border:2px dashed var(--rose-light); border-radius:16px; padding:28px; margin-bottom:24px; font-family:'Playfair Display',serif; font-style:italic; font-size:18px; color:var(--text); line-height:1.8; text-align:center; }
+  .riddle-input { width:100%; border:2px solid var(--rose-light); border-radius:12px; padding:14px 16px; font-family:'Lato',sans-serif; font-size:16px; color:var(--text); background:var(--rose-pale); outline:none; transition:border-color .2s; }
+  .riddle-input:focus { border-color:var(--rose); }
+  .riddle-hint { font-size:13px; color:var(--muted); margin-top:8px; font-style:italic; }
+  .riddle-reveal { display:none; text-align:center; padding:20px; }
+  .riddle-reveal-text { font-family:'Playfair Display',serif; font-size:20px; color:var(--rose); margin-top:12px; line-height:1.6; }
+
+  /* DECLARATIONS */
+  #decl-section { background:linear-gradient(180deg,#2d0a1e 0%,#1a0a12 100%); }
+  .decl-list { display:grid; gap:16px; width:100%; }
+  .decl-item { background:var(--rose-pale); border-left:4px solid var(--rose); border-radius:0 12px 12px 0; padding:18px 20px; font-family:'Playfair Display',serif; font-size:16px; color:var(--text); line-height:1.7; opacity:0; transform:translateX(-20px); transition:opacity .6s ease, transform .6s ease; cursor:pointer; position:relative; overflow:hidden; }
+  .decl-item.lit { opacity:1; transform:none; }
+  .decl-item::after { content:''; position:absolute; top:0; left:0; width:0; height:100%; background:rgba(194,24,91,.07); transition:width .4s ease; }
+  .decl-item:hover::after { width:100%; }
+  .decl-item .decl-emoji { font-size:22px; display:block; margin-bottom:6px; }
+  .decl-tap-hint { font-size:12px; color:var(--muted); text-align:center; margin-bottom:16px; }
+
+  /* DATE PICKER */
+  #date-section { background:linear-gradient(180deg,#1a0a12 0%,#2d0a1e 100%); }
+  .date-options { display:grid; grid-template-columns:1fr 1fr; gap:16px; width:100%; }
+  .date-card { background:var(--rose-pale); border:2px solid transparent; border-radius:16px; padding:20px; cursor:pointer; transition:all .25s ease; text-align:center; }
+  .date-card:hover { border-color:var(--rose); transform:translateY(-4px); box-shadow:0 12px 32px rgba(194,24,91,.15); }
+  .date-card.chosen { border-color:var(--rose); background:#fce4ec; }
+  .date-emoji { font-size:36px; display:block; margin-bottom:8px; }
+  .date-name { font-family:'Playfair Display',serif; font-size:18px; color:var(--rose); margin-bottom:4px; }
+  .date-desc { font-size:13px; color:var(--muted); line-height:1.5; }
+  .date-result { display:none; text-align:center; padding:24px; }
+  .date-result-text { font-family:'Playfair Display',serif; font-size:20px; color:var(--rose); margin-top:12px; }
+
+  /* CAPSULE */
+  #capsule-section { background:linear-gradient(180deg,#2d0a1e 0%,#1a0a12 100%); }
+  .capsule-input { width:100%; border:2px solid var(--rose-light); border-radius:12px; padding:16px; font-family:'Playfair Display',serif; font-style:italic; font-size:16px; color:var(--text); resize:none; height:140px; background:var(--rose-pale); transition:border-color .2s; outline:none; }
+  .capsule-input:focus { border-color:var(--rose); }
+  .capsule-input::placeholder { color:#c48b9f; }
+  .capsule-saved { display:none; text-align:center; padding:20px; }
+  .capsule-saved-title { font-family:'Playfair Display',serif; font-size:22px; color:var(--rose); margin-top:12px; }
+
+  /* BTN */
+  .btn-rose { background:var(--rose); color:white; border:none; border-radius:12px; padding:14px 32px; font-family:'Lato',sans-serif; font-size:15px; font-weight:700; cursor:pointer; margin-top:16px; transition:all .2s; letter-spacing:.5px; display:inline-block; }
+  .btn-rose:hover { background:#ad1457; transform:translateY(-2px); }
+
+  /* FINAL */
+  #final-section { background:linear-gradient(180deg,#1a0a12 0%,#3d0026 100%); text-align:center; }
+  .final-title { font-family:'Playfair Display',serif; font-size:clamp(32px,7vw,56px); color:var(--white); margin-bottom:16px; opacity:0; transition:opacity 1s ease; }
+  .final-title.visible { opacity:1; }
+  .final-subtitle { font-family:'Playfair Display',serif; font-style:italic; font-size:20px; color:#f9a8d4; margin-bottom:40px; opacity:0; transition:opacity 1s ease .4s; }
+  .final-subtitle.visible { opacity:1; }
+  .heart-btn { background:transparent; border:2px solid #f9a8d4; border-radius:100px; padding:16px 40px; color:#f9a8d4; font-family:'Lato',sans-serif; font-size:16px; cursor:pointer; opacity:0; transition:opacity 1s ease .8s, background .3s, color .3s; }
+  .heart-btn.visible { opacity:1; }
+  .heart-btn:hover { background:#f9a8d4; color:var(--dark); }
+
+  /* MISC */
+  #hearts-canvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:999; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+  .reveal { opacity:0; transform:translateY(32px); transition:opacity .8s ease,transform .8s ease; }
+  .reveal.visible { opacity:1; transform:none; }
+  .note { position:fixed; font-size:20px; pointer-events:none; z-index:2; animation:floatNote 3s ease-in forwards; opacity:0; }
+  @keyframes floatNote { 0%{opacity:0;transform:translateY(0) rotate(0deg)} 20%{opacity:.7} 100%{opacity:0;transform:translateY(-200px) rotate(30deg)} }
+  @media(max-width:520px) { .card{padding:28px 20px} .date-options{grid-template-columns:1fr} .hero-title{font-size:52px} }
+</style>
+</head>
+<body>
+
+<div id="stars-bg"></div>
+<canvas id="hearts-canvas"></canvas>
+
+<!-- HERO -->
+<section id="hero">
+  <p class="hero-tag">✦ dia 10 · 3 anos e 2 meses ✦</p>
+  <h1 class="hero-title">Minha<br><em>Morena</em></h1>
+  <p class="hero-subtitle">uma página só pra você, morena 💕</p>
+  <p class="hero-date">de Arthur, com todo o amor do mundo</p>
+  <p class="scroll-hint">↓ role pra baixo ↓</p>
+</section>
+
+<!-- LETTER -->
+<section id="letter-section">
+  <div class="card reveal">
+    <p class="card-title">Uma cartinha</p>
+    <div class="divider"></div>
+    <div class="letter-body">
+      <p>Oi, minha morena bonita.</p>
+      <p>Hoje é nosso dia 10, e fiz essa pagininha pra você porque você merece ser surpreendida — não só com flores ou jantar, mas com algo que fala de nós dois, das nossas histórias, das nossas risadas, do nosso jeito.</p>
+      <p>Três anos e dois meses. Parece pouco quando a gente lembra que ainda temos uma vida inteira pela frente. E eu quero essa vida toda com você.</p>
+      <p>Você é minha melhor pessoa. Meu sushi favorito, meu açaí de todo dia, minha música que eu coloco no repeat. Assim como você coloca o Luan Santana 😄</p>
+      <p>Aqui tem umas brincadeirinhas que fiz pensando na gente. Vai lá, minha morena — eu prometo que você vai sorrir.</p>
+    </div>
+    <p class="letter-sig">— Arthur 🤍</p>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz-section">
+  <div class="card reveal" id="quiz-card">
+    <p class="card-title">Quiz do casal 💬</p>
+    <p class="card-sub" id="quiz-sub">Você sabe mesmo quem é você pra ele?</p>
+    <div class="quiz-progress"><div class="quiz-progress-bar" id="qbar" style="width:0%"></div></div>
+    <p class="quiz-q" id="quiz-q">—</p>
+    <div class="quiz-options" id="quiz-opts"></div>
+    <div class="quiz-feedback" id="quiz-fb"></div>
+    <div id="quiz-result" style="display:none;text-align:center;padding:8px 0;">
+      <p class="quiz-score" id="quiz-score-txt">0/4</p>
+      <p class="quiz-result-msg" id="quiz-result-msg"></p>
+      <button class="btn-rose" style="margin-top:20px;" onclick="restartQuiz()">Jogar de novo 🔄</button>
+    </div>
+  </div>
+</section>
+
+<!-- CHARADA -->
+<section id="riddle-section">
+  <div class="card reveal">
+    <p class="card-title">Charada do coração 🩺</p>
+    <p class="card-sub">Uma questão pra quem cuida de vidas — e também do meu coração</p>
+    <div class="riddle-box">
+      "Sou urgência sem código azul,<br>
+      sou vital sem precisar de monitor.<br>
+      Não preciso de prescrição pra agir,<br>
+      e meu efeito colateral é sorriso.<br>
+      Estou sempre na escala do amor,<br>
+      e o paciente... é o Arthur.<br><br>
+      O que sou eu?"
+    </div>
+    <input class="riddle-input" id="riddle-input" type="text" placeholder="Digite sua resposta aqui..." oninput="checkRiddle(this.value)" autocomplete="off" />
+    <p class="riddle-hint" id="riddle-hint">💡 Dica: não precisa de diploma, mas você já tem de sobra</p>
+    <div class="riddle-reveal" id="riddle-reveal">
+      <span style="font-size:52px;">🫀</span>
+      <p class="riddle-reveal-text">O <strong>amor da minha morena</strong>.<br>
+      Não tem na farmácia. Não tem protocolo.<br>
+      Mas cura tudo em mim.</p>
+      <button class="btn-rose" onclick="spawnNotes()">Isso me fez sorrir 🥺</button>
+    </div>
+  </div>
+</section>
+
+<!-- DECLARATIONS -->
+<section id="decl-section">
+  <div class="card reveal">
+    <p class="card-title">Coisas aleatórias que amo em você 🤎</p>
+    <p class="card-sub">Coisas pequenas demais pra caber numa mensagem normal. Clica em cada uma.</p>
+    <p class="decl-tap-hint">toque para sentir o carinho</p>
+    <div class="decl-list" id="decl-list">
+
+      <div class="decl-item" onclick="reactDecl(this, 0)">
+        <span class="decl-emoji">😏</span>
+        Aquelas vezes que você fica se achando — sem perceber que quem realmente tem mais moral aqui é o meu amor por você. Mas tá bom, pode se achar. Você merece.
+      </div>
+
+      <div class="decl-item" onclick="reactDecl(this, 1)">
+        <span class="decl-emoji">😋</span>
+        Quando você tá comendo algo que eu te apresentei e fica gostando demais... eu fico te olhando baixinho, orgulhoso, pensando: "fui eu que trouxe esse prazer pra vida dela." Amo isso.
+      </div>
+
+      <div class="decl-item" onclick="reactDecl(this, 2)">
+        <span class="decl-emoji">🪞</span>
+        Ficar te olhando enquanto você se arruma. Você não percebe, mas eu percebo cada detalhe. O cuidado que você tem com você mesma me encanta do mesmo jeito que a primeira vez.
+      </div>
+
+      <div class="decl-item" onclick="reactDecl(this, 3)">
+        <span class="decl-emoji">🤣</span>
+        Rir de coisas completamente sem sentido com você. Sabe aquela risada que machuca a barriga e você nem lembra mais por que começou? Só acontece com você. Só com você.
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- DATE PICKER -->
+<section id="date-section">
+  <div class="card reveal">
+    <p class="card-title">Escolha nosso próximo date 🌙</p>
+    <p class="card-sub">Clica no que você mais tá com vontade de fazer com o Arthur!</p>
+    <div class="date-options" id="date-opts">
+      <div class="date-card" onclick="pickDate(this,'Rodízio de sushi a dois','Você quer o salmão e o sashimi. Ele quer o temaki. No final os dois dividem tudo e ficam felizes demais. 🍣 Isso é amor.')">
+        <span class="date-emoji">🍣</span>
+        <p class="date-name">Sushi date</p>
+        <p class="date-desc">Aquele rodízio que a gente ama, mesa só pra nós dois</p>
+      </div>
+      <div class="date-card" onclick="pickDate(this,'Tarde de açaí & praia','Açaí grandão, granola, banana, mel... e os dois juntos sem pressa. O mar fazendo fundo. Isso é perfeito. 🌊')">
+        <span class="date-emoji">🫐</span>
+        <p class="date-name">Açaí & praia</p>
+        <p class="date-desc">Tarde preguiçosa, açaí na mão, brisa boa</p>
+      </div>
+      <div class="date-card" onclick="pickDateLuan(this)">
+        <span class="date-emoji">🎤</span>
+        <p class="date-name">Show do Luan</p>
+        <p class="date-desc">Cantando junto todas as músicas, os dois</p>
+      </div>
+      <div class="date-card" onclick="pickDate(this,'Noite de filme em casa','Cobertor, pipoca, você escolhe o filme, ele finge que não estava dormindo. Mas na verdade ama cada segundo ao seu lado. 🍿')">
+        <span class="date-emoji">🎬</span>
+        <p class="date-name">Noite de filme</p>
+        <p class="date-desc">Cobertor, pipoca e os dois no mundo de vocês</p>
+      </div>
+    </div>
+    <div class="date-result" id="date-result">
+      <span style="font-size:48px;" id="date-result-emoji">💕</span>
+      <p class="date-result-text" id="date-result-text">—</p>
+      <button class="btn-rose" style="margin-top:20px;" onclick="resetDate()">Escolher de novo 💭</button>
+    </div>
+  </div>
+</section>
+
+<!-- CAPSULE -->
+<section id="capsule-section">
+  <div class="card reveal">
+    <p class="card-title">Cápsula do tempo 💌</p>
+    <p class="card-sub">Escreve uma mensagem para o Arthur ler amanhã de manhã. Ou daqui a um ano. Pode ser segredo, pode ser declaração — é sua.</p>
+    <textarea class="capsule-input" id="capsule-text" placeholder="Meu amor, hoje eu sinto que..."></textarea>
+    <button class="btn-rose" onclick="saveCapsule()">Guardar no tempo ✨</button>
+    <div class="capsule-saved" id="capsule-saved">
+      <span style="font-size:48px;">🔒</span>
+      <p class="capsule-saved-title">Guardada com carinho!</p>
+      <p style="color:var(--muted);font-size:14px;margin-top:8px;">Só o tempo — e o Arthur — vão saber o que está aqui dentro.</p>
+      <div style="margin-top:20px;background:var(--rose-pale);border-radius:12px;padding:16px;font-family:'Playfair Display',serif;font-style:italic;color:var(--text);font-size:15px;text-align:left;line-height:1.7;" id="capsule-preview"></div>
+    </div>
+  </div>
+</section>
+
+<!-- LUAN MODAL -->
+<div id="luan-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,10,18,.92);z-index:9000;align-items:center;justify-content:center;flex-direction:column;padding:24px;">
+  <div style="background:#1a0a12;border:2px solid #f9a8d4;border-radius:20px;padding:28px 24px;max-width:480px;width:100%;text-align:center;position:relative;">
+    <button onclick="closeLuan()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:#f9a8d4;font-size:22px;cursor:pointer;line-height:1;">✕</button>
+    <p style="font-family:'Playfair Display',serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">🎤 show do luan</p>
+    <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:#f9a8d4;margin-bottom:20px;line-height:1.6;">Você cantando cada música,<br>ele do seu lado sorrindo porque ama te ver feliz. 💛</p>
+    <iframe id="luan-iframe" style="border-radius:12px;width:100%;height:152px;border:none;" src="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    <p style="margin-top:14px;font-size:13px;color:var(--muted);">Meteoro — Luan Santana 🌟</p>
+  </div>
+</div>
+
+<!-- FINAL -->
+<section id="final-section">
+  <h2 class="final-title" id="final-title">Você é meu lar.</h2>
+  <p class="final-subtitle" id="final-sub">Feliz dia 10, minha morena linda. 🤍</p>
+  <button class="heart-btn" id="heart-btn" onclick="launchHearts()">Clica aqui pra terminar com estilo 💕</button>
+</section>
+
+<script>
+/* STARS */
+(function(){
+  const bg=document.getElementById('stars-bg');
+  for(let i=0;i<160;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2.5+.5;
+    s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*3+1).toFixed(1)}s;animation-delay:${(Math.random()*4).toFixed(1)}s;`;
+    bg.appendChild(s);
+  }
+})();
+
+/* SCROLL REVEAL */
+const revEls=document.querySelectorAll('.reveal');
+const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.15});
+revEls.forEach(r=>ro.observe(r));
+
+/* DECLARATIONS STAGGER */
+const declItems=document.querySelectorAll('.decl-item');
+const declObs=new IntersectionObserver(es=>{
+  if(es[0].isIntersecting){declItems.forEach((el,i)=>{setTimeout(()=>el.classList.add('lit'),i*200+100)})}
+},{threshold:.2});
+declObs.observe(document.getElementById('decl-list'));
+
+const declReacted=[false,false,false,false];
+const declReactions=['Exatamente assim! 😂💕','Amo te ver feliz com as coisas que descobriu. 🥰','Você é linda demais, sabia? 🌹','Essa risada é a minha favorita no mundo inteiro. 🤣🤍'];
+function reactDecl(el,idx){
+  if(declReacted[idx])return;
+  declReacted[idx]=true;
+  el.style.borderColor='var(--rose)';
+  el.style.background='#fce4ec';
+  const msg=document.createElement('p');
+  msg.style.cssText='margin-top:10px;font-size:13px;color:var(--rose);font-style:italic;font-family:"Playfair Display",serif;';
+  msg.textContent='— '+declReactions[idx];
+  el.appendChild(msg);
+  spawnNotes();
+}
+
+/* FINAL REVEAL */
+const finalObs=new IntersectionObserver(es=>{
+  if(es[0].isIntersecting){
+    setTimeout(()=>document.getElementById('final-title').classList.add('visible'),100);
+    setTimeout(()=>document.getElementById('final-sub').classList.add('visible'),500);
+    setTimeout(()=>document.getElementById('heart-btn').classList.add('visible'),900);
+  }
+},{threshold:.3});
+finalObs.observe(document.getElementById('final-section'));
+
+/* ======================== QUIZ ======================== */
+const questions=[
+  {
+    type:'normal',
+    q:'Onde foi nosso primeiro encontro? 🥰',
+    opts:['Açailândia','Depot Medieval','Cineminha','Coco Bambu'],
+    correct:1,
+    fun:'O Depot Medieval — o começo de tudo. Um encontro que virou 3 anos e 2 meses (e contando). 💕'
+  },
+  {
+    type:'trick',
+    q:'Quais são as coisas que você deu ao Arthur que, por sua conta, ele agora é completamente apaixonado?',
+    opts:[
+      'Batata doce, açaí e sushi',
+      'Sushi, panqueca e açaí',
+      'Juçara, batata doce e cebola caramelizada',
+      'Torrone, açaí e Cheetos com Nutella'
+    ],
+    hiddenOpt:'Nenhuma dessas... a resposta certa é outra 💛',
+    fun:'Seu coração, sua caixinha e seu beijo. Não tem comida no mundo que chegue perto disso. 🤍'
+  },
+  {
+    type:'riddle_link',
+    q:'Agora é hora da charada de enfermagem! Role pra baixo depois do quiz. 🩺',
+    opts:['Tô curiosa, vou lá! ➜'],
+    correct:0,
+    fun:'Vai lá, minha morena enfermeira do meu coração! 💉💕'
+  },
+  {
+    type:'normal',
+    q:'O Arthur não conseguiria mais viver sem qual dessas coisas que você trouxe pra vida dele?',
+    opts:['O açaí de granola e mel','As risadas de coisas sem sentido','Te olhar enquanto você se arruma','Tudo isso junto, e mais você 🤍'],
+    correct:3,
+    fun:'Como escolher uma coisa só? Impossível. Você é todas as coisas ao mesmo tempo. 💕'
+  }
+];
+
+let qIdx=0,score=0,answered=false,trickPhase=0;
+
+function loadQuestion(){
+  const q=questions[qIdx];
+  document.getElementById('quiz-q').textContent=q.q;
+  document.getElementById('qbar').style.width=(qIdx/questions.length*100)+'%';
+  document.getElementById('quiz-fb').style.display='none';
+  const opts=document.getElementById('quiz-opts');
+  opts.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='quiz-btn';btn.textContent=opt;
+    btn.onclick=()=>answer(i);
+    opts.appendChild(btn);
+  });
+  trickPhase=0;
+  answered=false;
+}
+
+function answer(idx){
+  if(answered)return;
+  const q=questions[qIdx];
+
+  /* TRICK QUESTION */
+  if(q.type==='trick'){
+    if(trickPhase===0){
+      answered=true;
+      const btns=document.querySelectorAll('.quiz-btn');
+      btns.forEach(b=>b.disabled=true);
+      btns[idx].classList.add('wrong');
+      const fb=document.getElementById('quiz-fb');
+      fb.style.display='block';
+      fb.style.background='#fff3e0';fb.style.color='#b45309';
+      fb.innerHTML='Ops... errou! Na verdade <em>nenhuma</em> dessas opções está certa. 🤔<br>Olha o que apareceu ali em baixo...';
+      /* inject hidden option */
+      setTimeout(()=>{
+        const hbtn=document.createElement('button');
+        hbtn.className='quiz-btn hidden-reveal';
+        hbtn.textContent=q.hiddenOpt;
+        hbtn.onclick=()=>revealTrick();
+        document.getElementById('quiz-opts').appendChild(hbtn);
+        trickPhase=1;
+        btns.forEach(b=>b.disabled=false);answered=false;
+      },1200);
+      return;
+    }
+  }
+
+  answered=true;
+  const btns=document.querySelectorAll('.quiz-btn');
+  btns.forEach(b=>b.disabled=true);
+
+  if(q.type==='trick'&&idx===4){revealTrick();return;}
+
+  if(q.type!=='riddle_link') btns[q.correct].classList.add('correct');
+  if(idx!==q.correct&&q.type!=='trick') btns[idx].classList.add('wrong');
+  if(q.type==='riddle_link'||idx===q.correct) score++;
+
+  const fb=document.getElementById('quiz-fb');
+  fb.style.display='block';
+  fb.style.background=idx===q.correct||q.type==='riddle_link'?'#e8f5e9':'#fff3e0';
+  fb.style.color=idx===q.correct||q.type==='riddle_link'?'#1b5e20':'#e65100';
+  fb.textContent=q.fun;
+
+  setTimeout(()=>{
+    qIdx++;
+    if(qIdx<questions.length)loadQuestion();
+    else showResult();
+  },2400);
+}
+
+function revealTrick(){
+  answered=true;
+  document.querySelectorAll('.quiz-btn').forEach(b=>b.disabled=true);
+  score++;
+  const fb=document.getElementById('quiz-fb');
+  fb.style.display='block';
+  fb.style.background='linear-gradient(135deg,#fce4ec,#fff9c4)';
+  fb.style.color='#5d4037';
+  fb.style.fontFamily="'Playfair Display',serif";
+  fb.style.fontStyle='italic';
+  fb.style.fontSize='16px';
+  fb.innerHTML='<strong>Seu coração, sua caixinha e seu beijo.</strong><br>Não tem comida no mundo que chegue perto disso. 🤍';
+  spawnNotes();
+  setTimeout(()=>{qIdx++;if(qIdx<questions.length)loadQuestion();else showResult();},3000);
+}
+
+function showResult(){
+  document.getElementById('quiz-q').style.display='none';
+  document.getElementById('quiz-opts').style.display='none';
+  document.getElementById('quiz-fb').style.display='none';
+  document.getElementById('quiz-sub').style.display='none';
+  document.getElementById('quiz-result').style.display='block';
+  document.getElementById('quiz-score-txt').textContent=score+'/'+questions.length;
+  const msgs=["Você sabe exatamente quem é você pra ele. 💫","Quase tudo! Mas o importante é o que vocês sentem. 🤎","Acertou tudo! Feitos um pro outro mesmo. 💕"];
+  document.getElementById('quiz-result-msg').textContent=score>=4?msgs[2]:score>=2?msgs[0]:msgs[1];
+  spawnNotes();
+}
+
+function restartQuiz(){
+  qIdx=0;score=0;
+  ['quiz-q','quiz-opts','quiz-sub'].forEach(id=>document.getElementById(id).style.display='');
+  document.getElementById('quiz-opts').style.display='grid';
+  document.getElementById('quiz-result').style.display='none';
+  loadQuestion();
+}
+
+loadQuestion();
+
+/* RIDDLE */
+function checkRiddle(val){
+  const answers=['amor','o amor','seu amor','amor da bê','amor da beatriz','você','bê','beatriz'];
+  const clean=val.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  if(answers.some(a=>clean.includes(a.normalize('NFD').replace(/[\u0300-\u036f]/g,'')))){
+    document.getElementById('riddle-input').style.display='none';
+    document.getElementById('riddle-hint').style.display='none';
+    document.getElementById('riddle-reveal').style.display='block';
+    spawnNotes();
+  }
+}
+
+/* LUAN MODAL */
+function pickDateLuan(el){
+  document.querySelectorAll('.date-card').forEach(c=>c.classList.remove('chosen'));
+  el.classList.add('chosen');
+  const modal=document.getElementById('luan-modal');
+  modal.style.display='flex';
+  document.getElementById('luan-iframe').src='https://open.spotify.com/embed/track/2UEDrGHfMFDpkVlOKhWHPm?utm_source=generator&theme=0&autoplay=1';
+  spawnNotes();
+}
+function closeLuan(){
+  document.getElementById('luan-modal').style.display='none';
+  document.getElementById('luan-iframe').src='';
+}
+
+/* DATE */
+function pickDate(el,name,msg){
+  document.querySelectorAll('.date-card').forEach(c=>c.classList.remove('chosen'));
+  el.classList.add('chosen');
+  document.getElementById('date-result-emoji').textContent=el.querySelector('.date-emoji').textContent;
+  document.getElementById('date-result-text').textContent=msg;
+  setTimeout(()=>{
+    document.getElementById('date-opts').style.display='none';
+    document.getElementById('date-result').style.display='block';
+    spawnNotes();
+  },400);
+}
+function resetDate(){
+  document.getElementById('date-opts').style.display='grid';
+  document.getElementById('date-result').style.display='none';
+  document.querySelectorAll('.date-card').forEach(c=>c.classList.remove('chosen'));
+}
+
+/* CAPSULE */
+function saveCapsule(){
+  const txt=document.getElementById('capsule-text').value.trim();
+  if(!txt){document.getElementById('capsule-text').style.borderColor='#e53935';return;}
+  document.getElementById('capsule-text').style.display='none';
+  document.querySelector('#capsule-section .btn-rose').style.display='none';
+  document.getElementById('capsule-preview').textContent='"'+txt+'"';
+  document.getElementById('capsule-saved').style.display='block';
+  spawnNotes();
+}
+
+/* HEARTS */
+const canvas=document.getElementById('hearts-canvas');
+const ctx=canvas.getContext('2d');
+let particles=[];
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+resizeCanvas();window.addEventListener('resize',resizeCanvas);
+
+function launchHearts(){
+  resizeCanvas();particles=[];
+  const colors=['#f9a8d4','#C2185B','#ff6b9d','#ff4f93','#ffd6e8','#ff8fb1','#ffb3ce','#c77dff','#ffd700'];
+  const syms=['♥','♥','♥','★','♥','♥'];
+  for(let i=0;i<140;i++){
+    particles.push({x:Math.random()*canvas.width,y:canvas.height+20,vx:(Math.random()-.5)*4,vy:-(Math.random()*8+4),size:Math.random()*18+8,color:colors[Math.floor(Math.random()*colors.length)],sym:syms[Math.floor(Math.random()*syms.length)],life:1,decay:Math.random()*.012+.006,rotation:Math.random()*Math.PI*2,rotV:(Math.random()-.5)*.1,delay:Math.random()*60});
+  }
+  animHearts();
+  document.getElementById('heart-btn').textContent='💕 Te amo, minha morena! 💕';
+}
+
+function animHearts(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);let alive=false;
+  particles.forEach(p=>{
+    if(p.delay>0){p.delay--;return;}
+    alive=true;p.x+=p.vx;p.y+=p.vy;p.vy+=.07;p.life-=p.decay;p.rotation+=p.rotV;
+    if(p.life<=0)return;
+    ctx.save();ctx.globalAlpha=Math.max(0,p.life);ctx.translate(p.x,p.y);ctx.rotate(p.rotation);
+    ctx.font=`${p.size*1.6}px serif`;ctx.fillStyle=p.color;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(p.sym,0,0);ctx.restore();
+  });
+  if(alive)requestAnimationFrame(animHearts);else ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+/* NOTES */
+function spawnNotes(){
+  const notes=['♪','♫','🎵','♩','🎶'];
+  for(let i=0;i<5;i++){
+    setTimeout(()=>{
+      const n=document.createElement('div');n.className='note';
+      n.textContent=notes[Math.floor(Math.random()*notes.length)];
+      n.style.left=(20+Math.random()*60)+'vw';n.style.bottom='30vh';
+      n.style.color=['#f9a8d4','#C2185B','#ffd700'][Math.floor(Math.random()*3)];
+      document.body.appendChild(n);setTimeout(()=>n.remove(),3200);
+    },i*200);
+  }
+}
+</script>
+</body>
+</html>
